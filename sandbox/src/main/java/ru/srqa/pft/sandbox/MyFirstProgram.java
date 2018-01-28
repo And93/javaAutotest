@@ -2,30 +2,19 @@ package ru.srqa.pft.sandbox;
 
 public class MyFirstProgram {
 
-	public static void main(String[] arg) {
-	    hello("Andrei");
+    public static void main(String[] arg) {
 
-	    double l = 5.6;
+        hello("Andrei");
 
-        System.out.println("The area of a square with a side: " + l + " is: " + area(l) + "\n");
+        Square s = new Square(5.6);
+        System.out.println("The area of a square with a side: " + s.l + " is: " + s.area() + "\n");
 
-        double a = 54;
-        double b = 11;
+        Rectangle r = new Rectangle(54, 11);
+        System.out.println("The area of a rectangle with a side a: " + r.a +
+                ", and b: " + r.b + " is: " + r.area() + "\n");
+    }
 
-        System.out.println("The area of a rectangle with a side a: " + a +
-                ", and b: " + b + " is: " + area(a,b) + "\n");
-	}
-
-	public static void hello(String somebody) {
+    public static void hello(String somebody) {
         System.out.println("Hello, " + somebody + "!\n");
     }
-
-    public static double area(double l) {
-	    return l * l;
-    }
-
-    public static double area(double a, double b) {
-	    return a * b;
-    }
-
 }
