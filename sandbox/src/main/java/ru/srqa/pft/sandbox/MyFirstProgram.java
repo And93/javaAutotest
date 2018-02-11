@@ -6,10 +6,10 @@ public class MyFirstProgram {
 
         hello("Andrei");
 
-        Square s = new Square(5.6);
+        Square s = new Square(50.8);
         System.out.println("The area of a square with a side: " + s.l + " is: " + s.area() + "\n");
 
-        Rectangle r = new Rectangle(54, 11);
+        Rectangle r = new Rectangle(24, 978.999);
         System.out.println("The area of a rectangle with a side a: " + r.a +
                 ", and b: " + r.b + " is: " + r.area() + "\n");
     }
