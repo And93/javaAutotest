@@ -1,13 +1,20 @@
 package ru.stqa.pft.addressbook.appmanager;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.Select;
+import org.testng.Assert;
 import ru.stqa.pft.addressbook.model.ContactData;
 
 public class ContactHelper extends HelperBase {
 
-    public ContactHelper(FirefoxDriver wd) {
+    public ContactHelper(WebDriver wd) {
         super(wd);
+    }
+
+
+    public void addNewContact() {
+        click(By.linkText("add new"));
     }
 
     public void submitContact() {
@@ -15,7 +22,7 @@ public class ContactHelper extends HelperBase {
         click(By.id("container"));
     }
 
-    public void fillContactGroup(ContactData contactData) {
+    public void fillContact(ContactData contactData, boolean creation) {
         click(By.name("firstname"));
         type(By.name("firstname"), contactData.getFirstName());
         click(By.name("middlename"));
@@ -52,6 +59,12 @@ public class ContactHelper extends HelperBase {
         type(By.name("phone2"), contactData.getPhone2());
         click(By.name("notes"));
         type(By.name("notes"), contactData.getNotes());
+
+        if (creation) {
+            new Select(wd.findElement(By.name("new_group"))).selectByVisibleText(contactData.getGroup());
+        } else {
+            Assert.assertFalse(isElementPresent(By.name("new_group")));
+        }
     }
 
     public void selectContact() {
@@ -60,5 +73,23 @@ public class ContactHelper extends HelperBase {
 
     public void deleteSelectedContact() {
         click(By.xpath("//div[@id='content']/form[2]/div[2]/input"));
+    }
+
+    public void initContactModification() {
+        click(By.cssSelector("[title='Edit']"));
+    }
+
+    public void submitContactModification() {
+        click(By.name("update"));
+    }
+
+    public boolean isThereAContact() {
+        return isElementPresent(By.name("selected[]"));
+    }
+
+    public void createContact(ContactData contactData, boolean create) {
+        addNewContact();
+        fillContact(contactData, create);
+        submitContact();
     }
 }

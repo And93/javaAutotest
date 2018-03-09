@@ -7,13 +7,13 @@ public class ContactCreationTests extends TestBase {
 
     @Test
     public void testNewContact() {
-        app.getNavigationHelper().addNewContact();
-        app.getContactHelper().fillContactGroup(new ContactData(
+        app.getNavigationHelper().goToHomePage();
+        app.getContactHelper().createContact(new ContactData(
                 "MyFirstName",
                 "MyMiddleName",
                 "MyLastName",
                 "MyNickName",
-                "MyTitile",
+                "MyTitle",
                 "MyCompany",
                 "MyAddress",
                 "Home",
@@ -25,8 +25,7 @@ public class ContactCreationTests extends TestBase {
                 "[s[s[s[s[s[s[s[s[@cddcd.[q[q",
                 "address 25",
                 "here",
-                "null")
-        );
-        app.getContactHelper().submitContact();
+                "null",
+                "modification1"), true);
     }
 }
