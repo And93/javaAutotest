@@ -1,7 +1,11 @@
 package ru.stqa.pft.addressbook.tests;
 
+import org.testng.Assert;
 import org.testng.annotations.Test;
 import ru.stqa.pft.addressbook.model.ContactData;
+
+import java.util.Comparator;
+import java.util.List;
 
 public class ContactModificationTest extends TestBase {
 
@@ -9,49 +13,47 @@ public class ContactModificationTest extends TestBase {
     public void testContactModification() {
         app.getNavigationHelper().goToHomePage();
         if (!app.getContactHelper().isThereAContact()) {
-            app.getContactHelper().createContact(new ContactData(
-                    "MyFirstName",
-                    "MyMiddleName",
-                    "MyLastName",
-                    "MyNickName",
-                    "MyTitle",
-                    "MyCompany",
-                    "MyAddress",
-                    "Home",
-                    " + 00000 211111 10011001410410",
-                    "784818181121",
-                    "2222222",
-                    "nvbnvhbrt@vdfkmvdd.rogprekgo",
-                    "sfsjdn@lkcdmklsm.peppe",
-                    "[s[s[s[s[s[s[s[s[@cddcd.[q[q",
-                    "address 25",
-                    "here",
-                    "null",
-                    "modification1"), true);
+            app.getContactHelper().createContact(
+                    new ContactData(
+                            "MyFirstName",
+                            "MyMiddleName",
+                            "MyLastName",
+                            "MyNickName",
+                            "email@email.email",
+                            "modification1"
+                    ),
+                    true
+            );
         }
         app.getNavigationHelper().goToHomePage();
-        app.getContactHelper().initContactModification();
-        app.getContactHelper().fillContact(new ContactData(
+
+        List<ContactData> before = app.getContactHelper().getContactList();
+        app.getContactHelper().initContactModification(before.size() - 1);
+
+        ContactData contact = new ContactData(
                 "FirstName",
                 "MiddleName",
                 "LastName",
                 "NickName",
-                "Title",
-                "Company",
-                "Address",
-                "Home",
-                " + 00000 211111",
-                "784818181121",
-                "2222222",
-                "null",
-                "sfsjdn@lkcdmklsm.peppe",
-                "[s[s[s[s[s[s[s[s[@cddcd.[q[q",
-                "address 69",
-                "null",
-                "null",
-                "modification1"), false
+                "a@a.a",
+                "modification1"
+        );
+
+        app.getContactHelper().fillContact(
+                contact,
+                false
         );
         app.getContactHelper().submitContactModification();
         app.getNavigationHelper().goToHomePage();
+
+        List<ContactData> after = app.getContactHelper().getContactList();
+        Assert.assertEquals(after.size(), before.size());
+
+        before.remove(before.size() - 1);
+        before.add(contact);
+        Comparator<? super ContactData> byLastName = Comparator.comparing(ContactData::getLastName);
+        before.sort(byLastName);
+        after.sort(byLastName);
+        Assert.assertEquals(before, after);
     }
 }

@@ -1,31 +1,43 @@
 package ru.stqa.pft.addressbook.tests;
 
+import org.testng.Assert;
 import org.testng.annotations.Test;
 import ru.stqa.pft.addressbook.model.ContactData;
+
+import java.util.Comparator;
+import java.util.List;
 
 public class ContactCreationTests extends TestBase {
 
     @Test
     public void testNewContact() {
         app.getNavigationHelper().goToHomePage();
-        app.getContactHelper().createContact(new ContactData(
+
+        List<ContactData> before = app.getContactHelper().getContactList();
+
+        ContactData contact = new ContactData(
                 "MyFirstName",
                 "MyMiddleName",
                 "MyLastName",
                 "MyNickName",
-                "MyTitle",
-                "MyCompany",
-                "MyAddress",
-                "Home",
-                " + 00000 211111 10011001410410",
-                "784818181121",
-                "2222222",
-                "nvbnvhbrt@vdfkmvdd.rogprekgo",
-                "sfsjdn@lkcdmklsm.peppe",
-                "[s[s[s[s[s[s[s[s[@cddcd.[q[q",
-                "address 25",
-                "here",
-                "null",
-                "modification1"), true);
+                "first@first.first",
+                "modification1"
+        );
+
+        app.getContactHelper().createContact(
+                contact,
+                true
+        );
+
+        app.getNavigationHelper().goToHomePage();
+
+        List<ContactData> after = app.getContactHelper().getContactList();
+        Assert.assertEquals(after.size(), before.size() + 1);
+
+        before.add(contact);
+        Comparator<? super ContactData> byLastName = Comparator.comparing(ContactData::getLastName);
+        before.sort(byLastName);
+        after.sort(byLastName);
+        Assert.assertEquals(before, after);
     }
 }

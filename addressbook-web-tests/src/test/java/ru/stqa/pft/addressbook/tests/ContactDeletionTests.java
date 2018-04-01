@@ -1,7 +1,10 @@
 package ru.stqa.pft.addressbook.tests;
 
+import org.testng.Assert;
 import org.testng.annotations.Test;
 import ru.stqa.pft.addressbook.model.ContactData;
+
+import java.util.List;
 
 public class ContactDeletionTests extends TestBase {
 
@@ -9,28 +12,32 @@ public class ContactDeletionTests extends TestBase {
     public void testContactDeletion() {
         app.getNavigationHelper().goToHomePage();
         if (!app.getContactHelper().isThereAContact()) {
-            app.getContactHelper().createContact(new ContactData(
-                    "MyFirstName",
-                    "MyMiddleName",
-                    "MyLastName",
-                    "MyNickName",
-                    "MyTitle",
-                    "MyCompany",
-                    "MyAddress",
-                    "Home",
-                    " + 00000 211111 10011001410410",
-                    "784818181121",
-                    "2222222",
-                    "nvbnvhbrt@vdfkmvdd.rogprekgo",
-                    "sfsjdn@lkcdmklsm.peppe",
-                    "[s[s[s[s[s[s[s[s[@cddcd.[q[q",
-                    "address 25",
-                    "here",
-                    "null",
-                    "modification1"), true);
+            app.getContactHelper().createContact(
+                    new ContactData(
+                            "MyFirstName",
+                            "MyMiddleName",
+                            "MyLastName",
+                            "MyNickName",
+                            "email@email.email",
+                            "modification1"
+                    ),
+                    true
+            );
         }
-        app.getContactHelper().selectContact();
+        List<ContactData> before = app.getContactHelper().getContactList();
+        app.getContactHelper().selectContact(before.size() - 1);
         app.getContactHelper().deleteSelectedContact();
         app.closeAllert();
+        app.getNavigationHelper().goToHomePage();
+        List<ContactData> after = app.getContactHelper().getContactList();
+
+        Assert.assertEquals(after.size(), before.size() - 1);
+
+        before.remove(before.size() - 1);
+        for (int i = 0; i < after.size(); i++) {
+            Assert.assertEquals(before.get(i), after.get(i));
+        }
+
+        Assert.assertEquals(before, after);
     }
 }
