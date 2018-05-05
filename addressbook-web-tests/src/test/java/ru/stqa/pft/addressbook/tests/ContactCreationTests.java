@@ -11,7 +11,7 @@ public class ContactCreationTests extends TestBase {
 
     @Test
     public void testNewContact() {
-        app.getNavigationHelper().goToHomePage();
+        app.getTo().goToHomePage();
 
         List<ContactData> before = app.getContactHelper().getContactList();
 
@@ -29,7 +29,7 @@ public class ContactCreationTests extends TestBase {
                 true
         );
 
-        app.getNavigationHelper().goToHomePage();
+        app.getTo().goToHomePage();
 
         List<ContactData> after = app.getContactHelper().getContactList();
         Assert.assertEquals(after.size(), before.size() + 1);
