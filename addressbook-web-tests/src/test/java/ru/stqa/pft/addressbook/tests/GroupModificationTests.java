@@ -1,12 +1,18 @@
 package ru.stqa.pft.addressbook.tests;
 
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.MatcherAssert;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.stqa.pft.addressbook.model.GroupData;
+import ru.stqa.pft.addressbook.model.Groups;
 
-import java.util.Comparator;
-import java.util.List;
+import java.util.Set;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.testng.Assert.assertEquals;
 
 public class GroupModificationTests extends TestBase {
 
@@ -14,7 +20,7 @@ public class GroupModificationTests extends TestBase {
     public void ensurePreconditions() {
         app.getTo().groupPage();
 
-        if (app.group().list().size() == 0) {
+        if (app.group().all().size() == 0) {
             app.group()
                     .create(
                             new GroupData()
@@ -28,26 +34,21 @@ public class GroupModificationTests extends TestBase {
     @Test
     public void testGroupModification() {
 
-        List<GroupData> before = app.group().list();
+        Groups before = app.group().all();
 
-        int index = before.size() - 1;
+        GroupData modifiedGroup = before.iterator().next();
 
         GroupData group = new GroupData()
-                .withId(before.get(index).getId())
+                .withId(modifiedGroup.getId())
                 .withNameGroup("modification1")
                 .withHeader("modification2")
                 .withFooter("modification3");
 
-        app.group().modify(index, group);
+        app.group().modify(group);
 
-        List<GroupData> after = app.group().list();
-        Assert.assertEquals(after.size(), before.size());
+        Groups after = app.group().all();
+        assertEquals(after.size(), before.size());
 
-        before.remove(index);
-        before.add(group);
-        Comparator<? super GroupData> byId = Comparator.comparingInt(GroupData::getId);
-        before.sort(byId);
-        after.sort(byId);
-        Assert.assertEquals(before, after);
+        assertThat(after, equalTo(before.without(modifiedGroup).withAdded(group)));
     }
 }
