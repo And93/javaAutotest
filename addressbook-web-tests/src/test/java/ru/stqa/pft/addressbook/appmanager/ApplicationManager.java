@@ -1,17 +1,24 @@
 package ru.stqa.pft.addressbook.appmanager;
 
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.BrowserType;
+import ru.stqa.pft.addressbook.tests.TestBase;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 public class ApplicationManager {
 
-    WebDriver wd;
+    private final Properties properties;
 
+    private WebDriver wd;
     private ContactHelper contactHelper;
     private NavigationHelper navigationHelper;
     private GroupHelper groupHelper;
@@ -20,9 +27,13 @@ public class ApplicationManager {
 
     public ApplicationManager(String browser) {
         this.browser = browser;
+        properties = new Properties();
     }
 
-    public void init() {
+    public void init() throws IOException {
+
+        String target = System.getProperty("target", "local");
+        properties.load(new FileReader(new File(String.format(TestBase.PATH_TO_RESOURCES + "%s.properties", target))));
 
         switch (browser) {
             case BrowserType.FIREFOX:
@@ -36,13 +47,14 @@ public class ApplicationManager {
                 break;
         }
 
+        wd.manage().window().setSize(new Dimension(1920, 1080));
         wd.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
-        wd.get("http://localhost/addressbook/");
+        wd.get(properties.getProperty("web.baseUrl"));
         sessionHelper = new SessionHelper(wd);
         groupHelper = new GroupHelper(wd);
         navigationHelper = new NavigationHelper(wd);
         contactHelper = new ContactHelper(wd);
-        sessionHelper.login("admin", "secret");
+        sessionHelper.login(properties.getProperty("web.adminLogin"), properties.getProperty("web.adminPassword"));
     }
 
     public void stop() {
@@ -57,11 +69,11 @@ public class ApplicationManager {
         return navigationHelper;
     }
 
-    public ContactHelper getContactHelper() {
+    public ContactHelper contact() {
         return contactHelper;
     }
 
-    public void closeAllert() {
+    public void closeAlert() {
         wd.switchTo().alert().accept();
     }
 }

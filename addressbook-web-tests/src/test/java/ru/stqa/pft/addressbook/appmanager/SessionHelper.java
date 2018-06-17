@@ -5,13 +5,17 @@ import org.openqa.selenium.WebDriver;
 
 public class SessionHelper extends HelperBase {
 
+    private final By userInput = By.name("user");
+    private final By passwordInput = By.name("pass");
+    private final By submitButton = By.cssSelector("[name='LoginForm'] [value='Login']");
+
     public SessionHelper(WebDriver wd) {
         super(wd);
     }
 
     public void login(String username, String password) {
-        type(By.name("user"), username);
-        type(By.name("pass"), password);
-        click(By.xpath("//form[@id='LoginForm']/input[3]"));
+        type(userInput, username);
+        type(passwordInput, password);
+        click(submitButton);
     }
 }

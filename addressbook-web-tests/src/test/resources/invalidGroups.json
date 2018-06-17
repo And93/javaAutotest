@@ -1,0 +1,37 @@
+[
+  {
+    "nameGroup": "test '",
+    "header": "header 0",
+    "footer": "footer 0"
+  },
+  {
+    "nameGroup": "test 1",
+    "header": "header '",
+    "footer": "footer 1"
+  },
+  {
+    "nameGroup": "test 2",
+    "header": "header 2",
+    "footer": "footer '"
+  },
+  {
+    "nameGroup": "test '",
+    "header": "header 3",
+    "footer": "footer '"
+  },
+  {
+    "nameGroup": "test 4",
+    "header": "header '",
+    "footer": "footer '"
+  },
+  {
+    "nameGroup": "test '",
+    "header": "header '",
+    "footer": "footer 5"
+  },
+  {
+    "nameGroup": "test '",
+    "header": "header '",
+    "footer": "footer '"
+  }
+]

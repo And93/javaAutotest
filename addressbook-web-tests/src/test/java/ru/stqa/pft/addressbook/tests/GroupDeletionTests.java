@@ -5,34 +5,45 @@ import org.testng.annotations.Test;
 import ru.stqa.pft.addressbook.model.GroupData;
 import ru.stqa.pft.addressbook.model.Groups;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import java.io.IOException;
+
+import static org.testng.Assert.assertEquals;
 
 public class GroupDeletionTests extends TestBase {
 
     @BeforeMethod
-    public void ensurePreconditions() {
+    public void ensurePreconditions() throws IOException {
         app.getTo().groupPage();
 
         if (app.group().all().size() == 0) {
             app.group()
                     .create(
                             new GroupData()
-                                    .withNameGroup("test1")
-                                    .withHeader("test2")
-                                    .withFooter("test3")
+                                    .withNameGroup(TestBase.getDataProperties("groupName_3"))
+                                    .withHeader(TestBase.getDataProperties("header_3"))
+                                    .withFooter(TestBase.getDataProperties("footer_3"))
                     );
         }
     }
 
     @Test
     public void testGroupDeletion() {
-
         Groups before = app.group().all();
         GroupData deleteGroup = before.iterator().next();
         app.group().delete(deleteGroup);
-        assertThat(app.group().count(), equalTo(before.size() - 1));
+
+        assertEquals(
+                app.group().count(),
+                before.size() - 1,
+                "The group was not deleted, and the number of groups is not equal to the expected result"
+        );
+
         Groups after = app.group().all();
-        assertThat(after, equalTo(before.without(deleteGroup)));
+
+        assertEquals(
+                after,
+                before.without(deleteGroup),
+                "The group with id: " + deleteGroup.getId() + " was not deleted"
+        );
     }
 }

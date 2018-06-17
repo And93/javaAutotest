@@ -10,42 +10,58 @@ import java.util.List;
 
 public class GroupHelper extends HelperBase {
 
+    private final By groupPageButton = By.linkText("group page");
+    private final By submitGroupButton = By.name("submit");
+    private final By groupNameInput = By.name("group_name");
+    private final By groupHeaderInput = By.name("group_header");
+    private final By groupFooterInput = By.name("group_footer");
+    private final By newGroupButton = By.name("new");
+    private final By deleteGroupButton = By.name("delete");
+    private final By editGroupButton = By.name("edit");
+    private final By updateGroupButton = By.name("update");
+    private final By groupCheckBox = By.name("selected[]");
+    private final By groupListSelector = By.cssSelector("span.group");
+
     public GroupHelper(WebDriver wd) {
         super(wd);
     }
 
     public void returnToGroupPage() {
-        click(By.linkText("group page"));
+        click(groupPageButton);
     }
 
     public void submitGroupCreation() {
-        click(By.name("submit"));
+        click(submitGroupButton);
     }
 
     public void fillGroupForm(GroupData groupDate) {
-        type(By.name("group_name"), groupDate.getNameGroup());
-        type(By.name("group_header"), groupDate.getHeader());
-        type(By.name("group_footer"), groupDate.getFooter());
+        type(groupNameInput, groupDate.getNameGroup());
+        type(groupHeaderInput, groupDate.getHeader());
+        type(groupFooterInput, groupDate.getFooter());
     }
 
     public void initGroupCreation() {
-        click(By.name("new"));
+        click(newGroupButton);
     }
 
     public void deleteSelectedGroup() {
-        click(By.name("delete"));
+        click(deleteGroupButton);
+    }
+
+    public By groupByIdSelector(int id) {
+        return By.cssSelector(INPUT_TAG_NAME + "[" + VALUE_ATTRIBUTE + "='" + id + "']");
     }
 
     public void selectGroupById(int id) {
-        wd.findElement(By.cssSelector("input[value='" + id + "']")).click();
+        wd.findElement(this.groupByIdSelector(id)).click();
     }
 
     public void initGroupModification() {
-        click(By.name("edit"));
+        click(editGroupButton);
     }
 
     public void submitGroupModification() {
-        click(By.name("update"));
+        click(updateGroupButton);
     }
 
     public void create(GroupData group) {
@@ -67,11 +83,11 @@ public class GroupHelper extends HelperBase {
     }
 
     public boolean isThereAGroup() {
-        return isElementPresent(By.name("selected[]"));
+        return isElementPresent(groupCheckBox);
     }
 
     public int count() {
-        return wd.findElements(By.name("selected[]")).size();
+        return wd.findElements(groupCheckBox).size();
     }
 
     private Groups groupCache = null;
@@ -83,19 +99,17 @@ public class GroupHelper extends HelperBase {
         }
 
         groupCache = new Groups();
-        List<WebElement> elements = wd.findElements(By.cssSelector("span.group"));
+        List<WebElement> elements = wd.findElements(groupListSelector);
 
         for (WebElement element : elements) {
             String name = element.getText();
-            int id = Integer.parseInt(element.findElement(By.tagName("input")).getAttribute("value"));
+            int id = Integer.parseInt(element.findElement(By.tagName(INPUT_TAG_NAME)).getAttribute(VALUE_ATTRIBUTE));
             groupCache.add(
                     new GroupData()
                             .withId(id)
                             .withNameGroup(name));
         }
         return new Groups(groupCache);
-
-
     }
 
     public void delete(GroupData group) {

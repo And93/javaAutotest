@@ -12,58 +12,73 @@ import java.util.List;
 
 public class ContactHelper extends HelperBase {
 
+    private final By contactCheckBox = By.name("selected[]");
+    private final By addNewContactButton = By.linkText("add new");
+    private final By firstNameInput = By.name("firstname");
+    private final By middleNameInput = By.name("middlename");
+    private final By lastNameInput = By.name("lastname");
+    private final By nickNameInput = By.name("nickname");
+    private final By emailInput = By.name("email");
+    private final By email2Input = By.name("email2");
+    private final By newGroupDropDownMenu = By.name("new_group");
+    private final By editContactButton = By.cssSelector("[title='Edit']");
+    private final By submitContactButton = By.name("submit");
+    private final By deleteContactButton = By.cssSelector("[name='MainForm'] [value='Delete']");
+    private final By updateContactButton = By.name("update");
+    private final By lastNameInListElement = By.cssSelector("[name='entry'] td:nth-child(2)");
+    private final By photoInput = By.name("photo");
+
     public ContactHelper(WebDriver wd) {
         super(wd);
     }
 
     public void addNewContact() {
-        click(By.linkText("add new"));
+        click(addNewContactButton);
     }
 
     public void submitContact() {
-        click(By.xpath("//div[@id='content']/form/input[21]"));
-        click(By.id("container"));
+        click(submitContactButton);
     }
 
     public void fillContact(ContactData contactData, boolean creation) {
-        click(By.name("firstname"));
-        type(By.name("firstname"), contactData.getFirstName());
-        click(By.name("middlename"));
-        type(By.name("middlename"), contactData.getMiddleName());
-        click(By.name("lastname"));
-        type(By.name("lastname"), contactData.getLastName());
-        click(By.name("nickname"));
-        type(By.name("nickname"), contactData.getNickName());
-        click(By.name("email"));
-        type(By.name("email"), contactData.getEmail1());
-        click(By.name("email2"));
+        click(firstNameInput);
+        type(firstNameInput, contactData.getFirstName());
+        click(middleNameInput);
+        type(middleNameInput, contactData.getMiddleName());
+        click(lastNameInput);
+        type(lastNameInput, contactData.getLastName());
+        click(nickNameInput);
+        type(nickNameInput, contactData.getNickName());
+        click(emailInput);
+        type(emailInput, contactData.getFirstEmail());
+        click(email2Input);
+        attache(photoInput, contactData.getPhoto());
 
         if (creation) {
-            new Select(wd.findElement(By.name("new_group"))).selectByVisibleText(contactData.getGroup());
+            new Select(wd.findElement(newGroupDropDownMenu)).selectByVisibleText(contactData.getGroup());
         } else {
-            Assert.assertFalse(isElementPresent(By.name("new_group")));
+            Assert.assertFalse(isElementPresent(newGroupDropDownMenu));
         }
     }
 
     public void selectContact(int index) {
-        wd.findElements(By.name("selected[]")).get(index).click();
+        wd.findElements(contactCheckBox).get(index).click();
     }
 
     public void deleteSelectedContact() {
-        click(By.xpath("//div[@id='content']/form[2]/div[2]/input"));
+        click(deleteContactButton);
     }
 
     public void initContactModification(int index) {
-        wd.findElements(By.cssSelector("[title='Edit']")).get(index).click();
-
+        wd.findElements(editContactButton).get(index).click();
     }
 
     public void submitContactModification() {
-        click(By.name("update"));
+        click(updateContactButton);
     }
 
     public boolean isThereAContact() {
-        return isElementPresent(By.name("selected[]"));
+        return isElementPresent(contactCheckBox);
     }
 
     public void createContact(ContactData contactData, boolean create) {
@@ -73,23 +88,16 @@ public class ContactHelper extends HelperBase {
     }
 
     public int getContactCount() {
-        return wd.findElements(By.name("selected[]")).size();
+        return wd.findElements(contactCheckBox).size();
     }
 
     public List<ContactData> getContactList() {
         List<ContactData> contacts = new ArrayList<ContactData>();
-        List<WebElement> elementsLastName = wd.findElements(By.cssSelector("[name='entry'] td:nth-child(2)"));
+        List<WebElement> elementsLastName = wd.findElements(lastNameInListElement);
 
         for (WebElement element : elementsLastName) {
             String lastName = element.getText();
-            ContactData contact = new ContactData(
-                    null,
-                    null,
-                    lastName,
-                    null,
-                    null,
-                    null
-            );
+            ContactData contact = new ContactData().withLastName(lastName);
             contacts.add(contact);
         }
         return contacts;

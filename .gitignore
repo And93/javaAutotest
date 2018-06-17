@@ -1,6 +1,8 @@
+.idea
 .gradle
 /build/
 /out/
+addressbook-web-tests/*.log
 
 # Ignore Gradle GUI config
 gradle-app.setting

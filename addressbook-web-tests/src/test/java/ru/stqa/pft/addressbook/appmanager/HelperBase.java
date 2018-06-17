@@ -5,7 +5,13 @@ import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 
+import java.io.File;
+
 public class HelperBase {
+
+    protected static final String VALUE_ATTRIBUTE = "value";
+    protected static final String INPUT_TAG_NAME = "input";
+
     protected WebDriver wd;
 
     public HelperBase(WebDriver wd) {
@@ -19,11 +25,17 @@ public class HelperBase {
     protected void type(By locator, String text) {
         click(locator);
         if (text != null) {
-            String existingText = wd.findElement(locator).getAttribute("value");
+            String existingText = wd.findElement(locator).getAttribute(VALUE_ATTRIBUTE);
             if (!text.equals(existingText)) {
                 wd.findElement(locator).clear();
                 wd.findElement(locator).sendKeys(text);
             }
+        }
+    }
+
+    protected void attache(By locator, File file) {
+        if (file != null) {
+            wd.findElement(locator).sendKeys(file.getAbsolutePath());
         }
     }
 
@@ -41,7 +53,7 @@ public class HelperBase {
             wd.findElement(locator);
             return true;
         } catch (NoSuchElementException ex) {
-            return  false;
+            return false;
         }
     }
 }
