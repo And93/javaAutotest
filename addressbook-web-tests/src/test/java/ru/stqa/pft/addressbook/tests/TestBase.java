@@ -39,8 +39,6 @@ public class TestBase {
         logger.info("Stop test " + n.getName());
     }
 
-
-
     public static String getDataProperties (String param) throws IOException {
         Properties props = new Properties();
         props.load(new InputStreamReader(new FileInputStream(PATH_TO_RESOURCES + "data.properties"), "UTF-8"));
